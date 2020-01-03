@@ -72,7 +72,7 @@ kotlin {
                 implementation "org.lwjgl:lwjgl:$lwjglVersion"
                 implementation "org.lwjgl:lwjgl-stb:$lwjglVersion"
                 implementation "org.lwjgl:lwjgl-glfw:$lwjglVersion"
-                implementation "org.lwjgl:lwjgl-opengles:$lwjglVersion"
+                implementation "org.lwjgl:lwjgl-opengl:$lwjglVersion"
             }
         }
         jsMain {
