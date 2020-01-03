@@ -1,0 +1,165 @@
+version = "0.0.1"
+group = "io.github.inoutch"
+
+buildscript {
+    ext.kotlinVersion = "1.3.61"
+    ext.lwjglVersion = "3.2.1"
+
+    repositories {
+        google()
+        jcenter()
+        mavenCentral()
+        maven { url = "https://plugins.gradle.org/m2" }
+    }
+
+    dependencies {
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVersion"
+        classpath "com.android.tools.build:gradle:3.5.3"
+    }
+}
+
+apply plugin: "kotlin-multiplatform"
+apply plugin: "com.android.library"
+apply plugin: "kotlin-android-extensions"
+apply plugin: "maven-publish"
+
+repositories {
+    google()
+    jcenter()
+    mavenCentral()
+}
+
+configurations {
+    ktlint
+}
+
+dependencies {
+    ktlint "com.pinterest:ktlint:0.35.0"
+}
+
+// jvm
+def platform = org.gradle.internal.os.OperatingSystem.current()
+switch (platform) {
+    case org.gradle.internal.os.OperatingSystem.WINDOWS:
+        project.ext.lwjglNatives = "natives-windows"
+        break
+    case org.gradle.internal.os.OperatingSystem.LINUX:
+        project.ext.lwjglNatives = "natives-linux"
+        break
+    case org.gradle.internal.os.OperatingSystem.MAC_OS:
+        project.ext.lwjglNatives = "natives-macos"
+        break
+}
+
+kotlin {
+    jvm {}
+    js {}
+    iosArm64 {}
+    android {
+        publishLibraryVariants("release")
+    }
+    androidNativeArm64 {}
+    sourceSets {
+        commonMain {
+            dependencies {
+                implementation "org.jetbrains.kotlin:kotlin-stdlib-common:$kotlinVersion"
+            }
+        }
+        jvmMain {
+            dependencies {
+                implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlinVersion"
+
+                implementation "org.lwjgl:lwjgl:$lwjglVersion"
+                implementation "org.lwjgl:lwjgl-stb:$lwjglVersion"
+                implementation "org.lwjgl:lwjgl-glfw:$lwjglVersion"
+                implementation "org.lwjgl:lwjgl-opengles:$lwjglVersion"
+            }
+        }
+        jsMain {
+            dependencies {
+                implementation "org.jetbrains.kotlin:kotlin-stdlib-js:$kotlinVersion"
+            }
+        }
+        iosArm64Main {
+            dependencies {
+                implementation "org.jetbrains.kotlin:kotlin-stdlib-common:$kotlinVersion"
+            }
+        }
+        androidMain {
+            dependencies {
+                implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlinVersion"
+                implementation "com.android.support.constraint:constraint-layout:1.1.3"
+            }
+        }
+
+        commonTest {
+            dependencies {
+                implementation "org.jetbrains.kotlin:kotlin-test-common:$kotlinVersion"
+                implementation "org.jetbrains.kotlin:kotlin-test-annotations-common:$kotlinVersion"
+            }
+        }
+        jvmTest {
+            dependencies {
+                implementation "org.jetbrains.kotlin:kotlin-test:$kotlinVersion"
+                implementation "org.jetbrains.kotlin:kotlin-test-junit:$kotlinVersion"
+                implementation "org.jetbrains.kotlin:kotlin-reflect:$kotlinVersion"
+
+                runtimeOnly "org.lwjgl:lwjgl:$lwjglVersion:$lwjglNatives"
+                runtimeOnly "org.lwjgl:lwjgl-stb:$lwjglVersion:$lwjglNatives"
+                runtimeOnly "org.lwjgl:lwjgl-glfw:$lwjglVersion:$lwjglNatives"
+            }
+        }
+        jsTest {
+            dependencies {
+                implementation "org.jetbrains.kotlin:kotlin-test-js:$kotlinVersion"
+            }
+        }
+        iosArm64Test {
+            dependencies {
+                implementation "org.jetbrains.kotlin:kotlin-test:$kotlinVersion"
+            }
+        }
+        androidTest {
+            dependencies {
+                implementation "org.jetbrains.kotlin:kotlin-test:$kotlinVersion"
+                implementation "org.jetbrains.kotlin:kotlin-test-junit:$kotlinVersion"
+                implementation "org.jetbrains.kotlin:kotlin-reflect:$kotlinVersion"
+            }
+        }
+    }
+}
+
+// android
+android {
+    compileSdkVersion 26
+
+    defaultConfig {
+        minSdkVersion 24
+        targetSdkVersion 26
+        versionName "1.0"
+    }
+
+    packagingOptions {
+        exclude "META-INF/common.kotlin_module"
+    }
+}
+
+// publish configure
+def repo = new File(rootDir, "repository")
+publishing.repositories.maven { url "file://${repo.absolutePath}" }
+
+// extra tasks
+task ktlint(type: JavaExec, group: "verification") {
+    description = "Check Kotlin code style."
+    classpath = configurations.ktlint
+    main = "com.pinterest.ktlint.Main"
+    args "src/**/*.kt"
+}
+check.dependsOn ktlint
+
+task ktlintFormat(type: JavaExec, group: "formatting") {
+    description = "Fix Kotlin code style deviations."
+    classpath = configurations.ktlint
+    main = "com.pinterest.ktlint.Main"
+    args "-F", "src/**/*.kt"
+}
