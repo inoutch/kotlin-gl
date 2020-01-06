@@ -1,0 +1,189 @@
+version = "0.0.1"
+group = "io.github.inoutch"
+
+buildscript {
+    ext.kotlinVersion = "1.3.61"
+    ext.lwjglVersion = "3.2.1"
+    ext.kotlinGLVersion = "0.0.1"
+    ext.mainClassName = "io.github.inoutch.kotlin.gl.example.triangle.MainKt"
+    ext.extraJvmArgs = ""
+
+    repositories {
+        google()
+        jcenter()
+        mavenCentral()
+        maven { url = "https://plugins.gradle.org/m2" }
+        maven { url = "https://dl.bintray.com/kotlin/kotlin-eap" }
+    }
+
+    dependencies {
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVersion"
+        classpath "com.android.tools.build:gradle:3.5.3"
+    }
+}
+
+apply plugin: "kotlin-multiplatform"
+apply plugin: "com.android.application"
+apply plugin: "kotlin-android-extensions"
+
+repositories {
+    google()
+    jcenter()
+    mavenCentral()
+    mavenLocal()
+}
+
+configurations {
+    ktlint
+}
+
+dependencies {
+    ktlint "com.pinterest:ktlint:0.35.0"
+}
+
+// jvm
+def platform = org.gradle.internal.os.OperatingSystem.current()
+switch (platform) {
+    case org.gradle.internal.os.OperatingSystem.WINDOWS:
+        project.ext.lwjglNatives = "natives-windows"
+        break
+    case org.gradle.internal.os.OperatingSystem.LINUX:
+        project.ext.lwjglNatives = "natives-linux"
+        break
+    case org.gradle.internal.os.OperatingSystem.MAC_OS:
+        project.ext.lwjglNatives = "natives-macos"
+        extraJvmArgs = ["-XstartOnFirstThread"]
+        break
+}
+
+kotlin {
+    jvm {}
+    iosArm64 {
+        binaries.executable {
+            entryPoint = "io.github.inoutch.kotlin.gl.example.triangle.main"
+        }
+    }
+    android {}
+    sourceSets {
+        commonMain {
+            dependencies {
+                implementation "org.jetbrains.kotlin:kotlin-stdlib-common:$kotlinVersion"
+                implementation "io.github.inoutch:kotlin-gl:$kotlinGLVersion"
+            }
+        }
+        jvmMain {
+            dependencies {
+                implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlinVersion"
+                implementation "io.github.inoutch:kotlin-gl-jvm:$kotlinGLVersion"
+
+                implementation "org.lwjgl:lwjgl:$lwjglVersion"
+                implementation "org.lwjgl:lwjgl-stb:$lwjglVersion"
+                implementation "org.lwjgl:lwjgl-glfw:$lwjglVersion"
+                implementation "org.lwjgl:lwjgl-opengl:$lwjglVersion"
+                implementation "org.lwjgl:lwjgl-egl:$lwjglVersion"
+
+                runtimeOnly "org.lwjgl:lwjgl:$lwjglVersion:$lwjglNatives"
+                runtimeOnly "org.lwjgl:lwjgl-stb:$lwjglVersion:$lwjglNatives"
+                runtimeOnly "org.lwjgl:lwjgl-glfw:$lwjglVersion:$lwjglNatives"
+                runtimeOnly "org.lwjgl:lwjgl-opengl:$lwjglVersion:$lwjglNatives"
+            }
+        }
+        iosArm64Main {
+            dependencies {
+                implementation "org.jetbrains.kotlin:kotlin-stdlib-common:$kotlinVersion"
+                implementation "io.github.inoutch:kotlin-gl-iosarm64:$kotlinGLVersion"
+            }
+        }
+        androidMain {
+            dependencies {
+                implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlinVersion"
+                implementation "io.github.inoutch:kotlin-gl-android:$kotlinGLVersion"
+                implementation "com.android.support.constraint:constraint-layout:1.1.3"
+            }
+        }
+    }
+}
+
+// android
+android {
+    compileSdkVersion 26
+
+    defaultConfig {
+        minSdkVersion 24
+        targetSdkVersion 26
+        versionName "1.0"
+    }
+
+    packagingOptions {
+        exclude "META-INF/common.kotlin_module"
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled true
+            matchingFallbacks = ["release", "debug"]
+        }
+        debug {
+            applicationIdSuffix ".debug"
+            debuggable true
+            matchingFallbacks = ["release", "debug"]
+        }
+    }
+}
+
+task runJvm(type: JavaExec) {
+    main = mainClassName
+    def target = kotlin.targets.jvm
+    def compilation = target.compilations.main
+    def classes = files([compilation.runtimeDependencyFiles, compilation.output.allOutputs])
+    classpath = classes
+    jvmArgs extraJvmArgs
+}
+
+task buildAppForXcode {
+    if (isCalledFromXcode()) {
+        dependsOn kotlin.targets.iosArm64.binaries.getExecutable(getBuildTypeForXcode()).linkTask
+    }
+
+    doLast {
+        if (!isCalledFromXcode()) {
+            throw new Exception("Please run 'buildAppForXcode' task with all necessary properties!")
+        }
+
+        copy {
+            from file(kotlin.targets.iosArm64.binaries.getExecutable(getBuildTypeForXcode()).outputFile)
+            into file(getBinaryLocationForXcode().parentFile)
+            rename {
+                getBinaryLocationForXcode().name
+            }
+        }
+    }
+}
+
+// extra tasks
+task ktlint(type: JavaExec, group: "verification") {
+    description = "Check Kotlin code style."
+    classpath = configurations.ktlint
+    main = "com.pinterest.ktlint.Main"
+    args "src/**/*.kt"
+}
+check.dependsOn ktlint
+
+task ktlintFormat(type: JavaExec, group: "formatting") {
+    description = "Fix Kotlin code style deviations."
+    classpath = configurations.ktlint
+    main = "com.pinterest.ktlint.Main"
+    args "-F", "src/**/*.kt"
+}
+
+private boolean isCalledFromXcode() {
+    project.hasProperty("configuration.name") && project.hasProperty("binary.location")
+}
+
+private String getBuildTypeForXcode() {
+    project.properties["configuration.name"] as String
+}
+
+private File getBinaryLocationForXcode() {
+    file(project.properties["binary.location"])
+}
