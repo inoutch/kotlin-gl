@@ -3,11 +3,12 @@ package io.github.inoutch.kotlin.gl.utility
 class WebGLMap<T> {
     private val map = mutableMapOf<Int, T>()
 
-    private var current = 0
+    private var current = 1
 
     fun create(value: T): Int {
-        val next = current++
+        val next = current
         map[current] = value
+        current++
         return next
     }
 
