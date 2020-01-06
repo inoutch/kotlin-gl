@@ -33,6 +33,10 @@ actual object gl {
 
     private val uniformMap = WebGLMap<WebGLUniformLocation>()
 
+    fun setContext(context: WebGLRenderingContext) {
+        glRenderingContext = context
+    }
+
     actual fun activeTexture(texture: GLenum) {
         glRenderingContext.activeTexture(texture)
     }
@@ -333,8 +337,12 @@ actual object gl {
         throw UnsupportedGLError()
     }
 
-    actual fun getProgramInfoLog(program: GLuint): String {
-        return checkNotNull(glRenderingContext.getProgramInfoLog(programMap[program]))
+    actual fun getProgramInfoLog(program: GLuint): String? {
+        val infoLog = glRenderingContext.getProgramInfoLog(programMap[program])
+        if (infoLog.isNullOrBlank()) {
+            return null
+        }
+        return infoLog
     }
 
     actual fun getRenderbufferParameteriv(target: GLenum, pname: GLenum): GLint {
@@ -351,8 +359,12 @@ actual object gl {
         throw UnsupportedGLError()
     }
 
-    actual fun getShaderInfoLog(shader: GLuint): String {
-        return checkNotNull(glRenderingContext.getShaderInfoLog(shaderMap[shader]))
+    actual fun getShaderInfoLog(shader: GLuint): String? {
+        val infoLog = glRenderingContext.getShaderInfoLog(shaderMap[shader])
+        if (infoLog.isNullOrBlank()) {
+            return null
+        }
+        return infoLog
     }
 
     actual fun getShaderPrecisionFormat(shadertype: GLenum, precisiontype: GLenum): Pair<GLint, GLint> {

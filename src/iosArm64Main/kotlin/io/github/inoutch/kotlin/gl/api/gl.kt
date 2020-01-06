@@ -496,11 +496,14 @@ actual object gl {
         params.value
     }
 
-    actual fun getProgramInfoLog(program: GLuint): String = memScoped {
+    actual fun getProgramInfoLog(program: GLuint): String? = memScoped {
         val length = alloc<GLsizeiVar>()
         var infolog = allocArray<GLcharVar>(1)
 
         glGetProgramInfoLog(program.toUInt(), 0, length.ptr, infolog)
+        if (length.value == 0) {
+            return@memScoped null
+        }
         infolog = allocArray(length.value)
 
         glGetProgramInfoLog(program.toUInt(), length.value, length.ptr, infolog)
@@ -517,11 +520,14 @@ actual object gl {
         throw UnsupportedGLError()
     }
 
-    actual fun getShaderInfoLog(shader: GLuint): String = memScoped {
+    actual fun getShaderInfoLog(shader: GLuint): String? = memScoped {
         val length = alloc<GLsizeiVar>()
         var infolog = allocArray<GLcharVar>(1)
 
         glGetShaderInfoLog(shader.toUInt(), 0, length.ptr, infolog)
+        if (length.value == 0) {
+            return@memScoped null
+        }
         infolog = allocArray(length.value)
 
         glGetShaderInfoLog(shader.toUInt(), length.value, length.ptr, infolog)

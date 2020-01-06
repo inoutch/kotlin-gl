@@ -375,10 +375,10 @@ expect object gl {
     fun getFramebufferAttachmentParameteriv(target: GLenum, attachment: GLenum, pname: GLenum): GLint
     fun getIntegerv(pname: GLenum): GLint
     fun getProgramiv(program: GLuint, pname: GLenum): GLint
-    fun getProgramInfoLog(program: GLuint): String
+    fun getProgramInfoLog(program: GLuint): String?
     fun getRenderbufferParameteriv(target: GLenum, pname: GLenum): GLint
     fun getShaderiv(shader: GLuint, pname: GLenum): GLint
-    fun getShaderInfoLog(shader: GLuint): String
+    fun getShaderInfoLog(shader: GLuint): String?
     fun getShaderPrecisionFormat(shadertype: GLenum, precisiontype: GLenum): Pair<GLint, GLint>
     fun getShaderSource(shader: GLuint): String
     fun getString(name: GLenum): String?
@@ -451,6 +451,7 @@ expect object gl {
     fun vertexAttrib3fv(index: GLuint, v: FloatArray)
     fun vertexAttrib4f(index: GLuint, x: GLfloat, y: GLfloat, z: GLfloat, w: GLfloat)
     fun vertexAttrib4fv(index: GLuint, v: FloatArray)
+    // TODO: Add offset version and remove others
     fun vertexAttribPointer(index: GLuint, size: GLint, type: GLenum, normalized: GLboolean, stride: GLsizei)
     fun vertexAttribPointer(index: GLuint, size: GLint, type: GLenum, normalized: GLboolean, stride: GLsizei, pointer: IntArray)
     fun vertexAttribPointer(index: GLuint, size: GLint, type: GLenum, normalized: GLboolean, stride: GLsizei, pointer: FloatArray)

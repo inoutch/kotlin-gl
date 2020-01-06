@@ -496,11 +496,14 @@ actual object gl {
         params.value
     }
 
-    actual fun getProgramInfoLog(program: GLuint): String = memScoped {
+    actual fun getProgramInfoLog(program: GLuint): String? = memScoped {
         val length = alloc<GLsizeiVar>()
         var infolog = allocArray<GLcharVar>(1)
 
         glGetProgramInfoLog(program.toUInt(), 0, length.ptr, infolog)
+        if (length.value == 0) {
+            return@memScoped null
+        }
         infolog = allocArray(length.value)
 
         glGetProgramInfoLog(program.toUInt(), length.value, length.ptr, infolog)
@@ -517,15 +520,18 @@ actual object gl {
         throw UnsupportedGLError()
     }
 
-    actual fun getShaderInfoLog(shader: GLuint): String = memScoped {
+    actual fun getShaderInfoLog(shader: GLuint): String? = memScoped {
         val length = alloc<GLsizeiVar>()
-        var infolog = allocArray<GLcharVar>(1)
+        var infoLog = allocArray<GLcharVar>(1)
 
-        glGetShaderInfoLog(shader.toUInt(), 0, length.ptr, infolog)
-        infolog = allocArray(length.value)
+        glGetShaderInfoLog(shader.toUInt(), 0, length.ptr, infoLog)
+        if (length.value == 0) {
+            return@memScoped null
+        }
+        infoLog = allocArray(length.value)
 
-        glGetShaderInfoLog(shader.toUInt(), length.value, length.ptr, infolog)
-        infolog.toKStringFromUtf8()
+        glGetShaderInfoLog(shader.toUInt(), length.value, length.ptr, infoLog)
+        infoLog.toKStringFromUtf8()
     }
 
     actual fun getShaderPrecisionFormat(shadertype: GLenum, precisiontype: GLenum): Pair<GLint, GLint> = memScoped {
