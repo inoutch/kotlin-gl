@@ -5,8 +5,7 @@ import io.github.inoutch.kotlin.gl.extension.toFloatArray
 import io.github.inoutch.kotlin.gl.extension.toFloatBuffer
 import io.github.inoutch.kotlin.gl.extension.toIntArray
 import io.github.inoutch.kotlin.gl.extension.toIntBuffer
-import java.nio.FloatBuffer
-import java.nio.IntBuffer
+import org.lwjgl.BufferUtils
 import org.lwjgl.opengl.GL46
 import org.lwjgl.system.MemoryUtil.NULL
 
@@ -252,39 +251,39 @@ actual object gl {
     }
 
     actual fun getActiveAttribSize(program: GLuint): GLint {
-        val size = IntBuffer.allocate(1)
-        val type = IntBuffer.allocate(1)
+        val size = BufferUtils.createIntBuffer(1)
+        val type = BufferUtils.createIntBuffer(1)
         GL46.glGetActiveAttrib(program, 0, size, type)
         return size[0]
     }
 
     actual fun getActiveAttrib(program: GLuint, index: GLuint): Pair<String, GLint> {
-        val size = IntBuffer.allocate(1) // Ignore
-        val type = IntBuffer.allocate(1)
+        val size = BufferUtils.createIntBuffer(1) // Ignore
+        val type = BufferUtils.createIntBuffer(1)
         val name = GL46.glGetActiveAttrib(program, index, size, type)
         return name to type[0]
     }
 
     actual fun getActiveUniformSize(program: GLuint): GLint {
-        val size = IntBuffer.allocate(1)
-        val type = IntBuffer.allocate(1)
+        val size = BufferUtils.createIntBuffer(1)
+        val type = BufferUtils.createIntBuffer(1)
         GL46.glGetActiveUniform(program, 0, size, type)
         return size[0]
     }
 
     actual fun getActiveUniform(program: GLuint, index: GLuint): Pair<String, GLint> {
-        val size = IntBuffer.allocate(1)
-        val type = IntBuffer.allocate(1)
+        val size = BufferUtils.createIntBuffer(1)
+        val type = BufferUtils.createIntBuffer(1)
         val name = GL46.glGetActiveUniform(program, index, size, type)
         return name to type[0]
     }
 
     actual fun getAttachedShaders(program: GLuint): IntArray {
-        val count = IntBuffer.allocate(1)
-        var shaders = IntBuffer.allocate(1)
+        val count = BufferUtils.createIntBuffer(1)
+        var shaders = BufferUtils.createIntBuffer(1)
         GL46.glGetAttachedShaders(program, count, shaders)
 
-        shaders = IntBuffer.allocate(count[0])
+        shaders = BufferUtils.createIntBuffer(count[0])
         GL46.glGetAttachedShaders(program, count, shaders)
         return shaders.toIntArray()
     }
@@ -298,7 +297,7 @@ actual object gl {
     }
 
     actual fun getBufferParameteriv(target: GLenum, pname: GLenum): GLint {
-        val bufferParameter = IntBuffer.allocate(1)
+        val bufferParameter = BufferUtils.createIntBuffer(1)
         GL46.glGetBufferParameteriv(target, pname, bufferParameter)
         return bufferParameter[0]
     }
@@ -308,52 +307,60 @@ actual object gl {
     }
 
     actual fun getFloatv(pname: GLenum): Float {
-        val floatBuffer = FloatBuffer.allocate(1)
+        val floatBuffer = BufferUtils.createFloatBuffer(1)
         GL46.glGetFloatv(pname, floatBuffer)
         return floatBuffer.get(0)
     }
 
     actual fun getFramebufferAttachmentParameteriv(target: GLenum, attachment: GLenum, pname: GLenum): GLint {
-        val intBuffer = IntBuffer.allocate(1)
+        val intBuffer = BufferUtils.createIntBuffer(1)
         GL46.glGetFramebufferAttachmentParameteriv(target, attachment, pname, intBuffer)
         return intBuffer[0]
     }
 
     actual fun getIntegerv(pname: GLenum): GLint {
-        val intBuffer = IntBuffer.allocate(1)
+        val intBuffer = BufferUtils.createIntBuffer(1)
         GL46.glGetIntegerv(pname, intBuffer)
         return intBuffer[0]
     }
 
     actual fun getProgramiv(program: GLuint, pname: GLenum): GLint {
-        val intBuffer = IntBuffer.allocate(1)
+        val intBuffer = BufferUtils.createIntBuffer(1)
         GL46.glGetProgramiv(program, pname, intBuffer)
         return intBuffer[0]
     }
 
-    actual fun getProgramInfoLog(program: GLuint): String {
-        return GL46.glGetProgramInfoLog(program)
+    actual fun getProgramInfoLog(program: GLuint): String? {
+        val infoLog = GL46.glGetProgramInfoLog(program)
+        if (infoLog.isBlank()) {
+            return null
+        }
+        return infoLog
     }
 
     actual fun getRenderbufferParameteriv(target: GLenum, pname: GLenum): GLint {
-        val intBuffer = IntBuffer.allocate(1)
+        val intBuffer = BufferUtils.createIntBuffer(1)
         GL46.glGetRenderbufferParameteriv(target, pname, intBuffer)
         return intBuffer[0]
     }
 
     actual fun getShaderiv(shader: GLuint, pname: GLenum): GLint {
-        val intBuffer = IntBuffer.allocate(1)
+        val intBuffer = BufferUtils.createIntBuffer(1)
         GL46.glGetShaderiv(shader, pname, intBuffer)
         return intBuffer[0]
     }
 
-    actual fun getShaderInfoLog(shader: GLuint): String {
-        return GL46.glGetShaderInfoLog(shader)
+    actual fun getShaderInfoLog(shader: GLuint): String? {
+        val infoLog = GL46.glGetShaderInfoLog(shader)
+        if (infoLog.isBlank()) {
+            return null
+        }
+        return infoLog
     }
 
     actual fun getShaderPrecisionFormat(shadertype: GLenum, precisiontype: GLenum): Pair<GLint, GLint> {
-        val range = IntBuffer.allocate(1)
-        val precision = IntBuffer.allocate(1)
+        val range = BufferUtils.createIntBuffer(1)
+        val precision = BufferUtils.createIntBuffer(1)
         GL46.glGetShaderPrecisionFormat(shadertype, precisiontype, range, precision)
         return range[0] to precision[0]
     }
@@ -367,25 +374,25 @@ actual object gl {
     }
 
     actual fun getTexParameterfv(target: GLenum, pname: GLenum): GLfloat {
-        val floatBuffer = FloatBuffer.allocate(1)
+        val floatBuffer = BufferUtils.createFloatBuffer(1)
         GL46.glGetTexParameterfv(target, pname, floatBuffer)
         return floatBuffer[0]
     }
 
     actual fun getTexParameteriv(target: GLenum, pname: GLenum): GLint {
-        val intBuffer = IntBuffer.allocate(1)
+        val intBuffer = BufferUtils.createIntBuffer(1)
         GL46.glGetTexParameteriv(target, pname, intBuffer)
         return intBuffer[0]
     }
 
     actual fun getUniformfv(program: GLuint, location: GLint): GLfloat {
-        val floatBuffer = FloatBuffer.allocate(1)
+        val floatBuffer = BufferUtils.createFloatBuffer(1)
         GL46.glGetUniformfv(program, location, floatBuffer)
         return floatBuffer[0]
     }
 
     actual fun getUniformiv(program: GLuint, location: GLint): GLint {
-        val intBuffer = IntBuffer.allocate(1)
+        val intBuffer = BufferUtils.createIntBuffer(1)
         GL46.glGetUniformiv(program, location, intBuffer)
         return intBuffer[0]
     }
@@ -395,13 +402,13 @@ actual object gl {
     }
 
     actual fun getVertexAttribfv(index: GLuint, pname: GLenum): GLfloat {
-        val floatBuffer = FloatBuffer.allocate(1)
+        val floatBuffer = BufferUtils.createFloatBuffer(1)
         GL46.glGetVertexAttribfv(index, pname, floatBuffer)
         return floatBuffer[0]
     }
 
     actual fun getVertexAttribiv(index: GLuint, pname: GLenum): GLint {
-        val intBuffer = IntBuffer.allocate(1)
+        val intBuffer = BufferUtils.createIntBuffer(1)
         GL46.glGetVertexAttribiv(index, pname, intBuffer)
         return intBuffer[0]
     }
@@ -455,13 +462,13 @@ actual object gl {
     }
 
     actual fun readPixelsi(x: GLint, y: GLint, width: GLsizei, height: GLsizei, format: GLenum, type: GLenum): IntArray {
-        val intBuffer = IntBuffer.allocate(width * height)
+        val intBuffer = BufferUtils.createIntBuffer(width * height)
         GL46.glReadPixels(x, y, width, height, format, type, intBuffer)
         return intBuffer.toIntArray()
     }
 
     actual fun readPixelsf(x: GLint, y: GLint, width: GLsizei, height: GLsizei, format: GLenum, type: GLenum): FloatArray {
-        val floatBuffer = FloatBuffer.allocate(width * height)
+        val floatBuffer = BufferUtils.createFloatBuffer(width * height)
         GL46.glReadPixels(x, y, width, height, format, type, floatBuffer)
         return floatBuffer.toFloatArray()
     }
