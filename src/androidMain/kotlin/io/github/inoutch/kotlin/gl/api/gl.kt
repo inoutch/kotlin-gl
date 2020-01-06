@@ -1,6 +1,8 @@
 package io.github.inoutch.kotlin.gl.api
 
 import android.opengl.GLES20
+import io.github.inoutch.kotlin.gl.constant.FLOAT_BYTE_SIZE
+import io.github.inoutch.kotlin.gl.constant.INT_BYTE_SIZE
 import io.github.inoutch.kotlin.gl.extension.toByteBuffer
 import io.github.inoutch.kotlin.gl.extension.toFloatArray
 import io.github.inoutch.kotlin.gl.extension.toFloatBuffer
@@ -10,6 +12,7 @@ import java.nio.FloatBuffer
 import java.nio.IntBuffer
 
 actual object gl {
+
     actual fun activeTexture(texture: GLenum) {
         GLES20.glActiveTexture(texture)
     }
@@ -59,11 +62,11 @@ actual object gl {
     }
 
     actual fun bufferData(target: GLenum, data: IntArray, usage: GLenum) {
-        GLES20.glBufferData(target, data.size, data.toIntBuffer(), usage)
+        GLES20.glBufferData(target, data.size * INT_BYTE_SIZE, data.toIntBuffer(), usage)
     }
 
     actual fun bufferData(target: GLenum, data: FloatArray, usage: GLenum) {
-        GLES20.glBufferData(target, data.size, data.toFloatBuffer(), usage)
+        GLES20.glBufferData(target, data.size * FLOAT_BYTE_SIZE, data.toFloatBuffer(), usage)
     }
 
     actual fun bufferData(target: GLenum, data: ByteArray, usage: GLenum) {
@@ -71,11 +74,11 @@ actual object gl {
     }
 
     actual fun bufferSubData(target: GLenum, offset: GLintptr, data: IntArray) {
-        GLES20.glBufferSubData(target, offset.toInt(), data.size, data.toIntBuffer())
+        GLES20.glBufferSubData(target, offset.toInt() * INT_BYTE_SIZE, data.size * INT_BYTE_SIZE, data.toIntBuffer())
     }
 
     actual fun bufferSubData(target: GLenum, offset: GLintptr, data: FloatArray) {
-        GLES20.glBufferSubData(target, offset.toInt(), data.size, data.toFloatBuffer())
+        GLES20.glBufferSubData(target, offset.toInt() * FLOAT_BYTE_SIZE, data.size * FLOAT_BYTE_SIZE, data.toFloatBuffer())
     }
 
     actual fun bufferSubData(target: GLenum, offset: GLintptr, data: ByteArray) {
@@ -332,8 +335,12 @@ actual object gl {
         return intBuffer[0]
     }
 
-    actual fun getProgramInfoLog(program: GLuint): String {
-        return GLES20.glGetProgramInfoLog(program)
+    actual fun getProgramInfoLog(program: GLuint): String? {
+        val infoLog = GLES20.glGetProgramInfoLog(program)
+        if (infoLog.isBlank()) {
+            return null
+        }
+        return infoLog
     }
 
     actual fun getRenderbufferParameteriv(target: GLenum, pname: GLenum): GLint {
@@ -348,8 +355,12 @@ actual object gl {
         return intBuffer[0]
     }
 
-    actual fun getShaderInfoLog(shader: GLuint): String {
-        return GLES20.glGetShaderInfoLog(shader)
+    actual fun getShaderInfoLog(shader: GLuint): String? {
+        val infoLog = GLES20.glGetShaderInfoLog(shader)
+        if (infoLog.isBlank()) {
+            return null
+        }
+        return infoLog
     }
 
     actual fun getShaderPrecisionFormat(shadertype: GLenum, precisiontype: GLenum): Pair<GLint, GLint> {
@@ -660,11 +671,11 @@ actual object gl {
     }
 
     actual fun vertexAttribPointer(index: GLuint, size: GLint, type: GLenum, normalized: GLboolean, stride: GLsizei, pointer: IntArray) {
-        GLES20.glVertexAttribPointer(index, size, type, normalized, stride, pointer.toIntBuffer())
+        GLES20.glVertexAttribPointer(index, size * INT_BYTE_SIZE, type, normalized, stride, pointer.toIntBuffer())
     }
 
     actual fun vertexAttribPointer(index: GLuint, size: GLint, type: GLenum, normalized: GLboolean, stride: GLsizei, pointer: FloatArray) {
-        GLES20.glVertexAttribPointer(index, size, type, normalized, stride, pointer.toFloatBuffer())
+        GLES20.glVertexAttribPointer(index, size * FLOAT_BYTE_SIZE, type, normalized, stride, pointer.toFloatBuffer())
     }
 
     actual fun vertexAttribPointer(index: GLuint, size: GLint, type: GLenum, normalized: GLboolean, stride: GLsizei, pointer: ByteArray) {

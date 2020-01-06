@@ -23,22 +23,13 @@ fun ByteBuffer.toByteArray(): ByteArray {
 }
 
 fun IntArray.toIntBuffer(): IntBuffer {
-    val intBuffer = IntBuffer.allocate(size)
-    forEach { intBuffer.put(it) }
-    intBuffer.flip()
-    return intBuffer
+    return IntBuffer.wrap(this)
 }
 
 fun FloatArray.toFloatBuffer(): FloatBuffer {
-    val floatBuffer = FloatBuffer.allocate(size)
-    forEach { floatBuffer.put(it) }
-    floatBuffer.flip()
-    return floatBuffer
+    return FloatBuffer.wrap(this)
 }
 
 fun ByteArray.toByteBuffer(): ByteBuffer {
-    val byteBuffer = ByteBuffer.allocate(size)
-    forEach { byteBuffer.put(it) }
-    byteBuffer.flip()
-    return byteBuffer
+    return ByteBuffer.wrap(this)
 }
