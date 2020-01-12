@@ -1,0 +1,5 @@
+language = Objective-C
+headers = EAGLView.h
+
+staticLibraries = libEAGLView.a
+libraryPaths = ./xcode/build/Release-iphoneos

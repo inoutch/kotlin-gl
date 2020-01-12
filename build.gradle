@@ -54,7 +54,15 @@ switch (platform) {
 kotlin {
     jvm {}
     js {}
-    iosArm64 {}
+    iosArm64 {
+        compilations.main {
+            cinterops {
+                eaglview {
+                    includeDirs "./src/iosArm64Main/objc/EAGLView"
+                }
+            }
+        }
+    }
     android {
         publishLibraryVariants("release")
     }

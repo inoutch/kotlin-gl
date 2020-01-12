@@ -1,10 +1,10 @@
 package io.github.inoutch.kotlin.gl.extension
 
-import org.lwjgl.BufferUtils
 import java.nio.ByteBuffer
 import java.nio.FloatBuffer
 import java.nio.IntBuffer
 import kotlin.math.min
+import org.lwjgl.BufferUtils
 
 fun IntBuffer.toIntArray(): IntArray {
     val intArray = IntArray(capacity())
