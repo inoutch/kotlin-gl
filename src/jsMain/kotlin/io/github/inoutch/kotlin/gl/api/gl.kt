@@ -330,6 +330,10 @@ actual object gl {
     }
 
     actual fun getIntegerv(pname: GLenum): GLint {
+        when (pname) {
+            GL_CURRENT_PROGRAM -> shaderMap.search(glRenderingContext.getParameter(pname) as WebGLShader)
+            GL_FRAMEBUFFER_BINDING -> framebufferMap.search(glRenderingContext.getParameter(pname) as WebGLFramebuffer)
+        }
         throw UnsupportedGLError()
     }
 
