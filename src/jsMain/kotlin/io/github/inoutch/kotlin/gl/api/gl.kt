@@ -89,11 +89,23 @@ actual object gl {
         glRenderingContext.bufferData(target, Int32Array(data.toTypedArray()), usage)
     }
 
+    actual fun bufferData(target: GLenum, data: IntArray, size: GLint, usage: GLenum) {
+        glRenderingContext.bufferData(target, Int32Array(data.sliceArray(IntRange(0, size)).toTypedArray()), usage)
+    }
+
     actual fun bufferData(target: GLenum, data: FloatArray, usage: GLenum) {
         glRenderingContext.bufferData(target, Float32Array(data.toTypedArray()), usage)
     }
 
+    actual fun bufferData(target: GLenum, data: FloatArray, size: GLint, usage: GLenum) {
+        glRenderingContext.bufferData(target, Float32Array(data.sliceArray(IntRange(0, size)).toTypedArray()), usage)
+    }
+
     actual fun bufferData(target: GLenum, data: ByteArray, usage: GLenum) {
+        throw UnsupportedGLError()
+    }
+
+    actual fun bufferData(target: GLenum, data: ByteArray, size: GLint, usage: GLenum) {
         throw UnsupportedGLError()
     }
 
@@ -101,11 +113,23 @@ actual object gl {
         glRenderingContext.bufferSubData(target, offset.toInt(), Int32Array(data.toTypedArray()))
     }
 
+    actual fun bufferSubData(target: GLenum, offset: GLintptr, data: IntArray, size: GLint) {
+        glRenderingContext.bufferSubData(target, offset.toInt(), Int32Array(data.sliceArray(IntRange(0, size)).toTypedArray()))
+    }
+
     actual fun bufferSubData(target: GLenum, offset: GLintptr, data: FloatArray) {
         glRenderingContext.bufferSubData(target, offset.toInt(), Float32Array(data.toTypedArray()))
     }
 
+    actual fun bufferSubData(target: GLenum, offset: GLintptr, data: FloatArray, size: GLint) {
+        glRenderingContext.bufferSubData(target, offset.toInt(), Float32Array(data.sliceArray(IntRange(0, size)).toTypedArray()))
+    }
+
     actual fun bufferSubData(target: GLenum, offset: GLintptr, data: ByteArray) {
+        throw UnsupportedGLError()
+    }
+
+    actual fun bufferSubData(target: GLenum, offset: GLintptr, data: ByteArray, size: GLint) {
         throw UnsupportedGLError()
     }
 

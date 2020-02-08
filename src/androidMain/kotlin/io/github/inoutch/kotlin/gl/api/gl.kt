@@ -65,24 +65,48 @@ actual object gl {
         GLES20.glBufferData(target, data.size * INT_BYTE_SIZE, data.toIntBuffer(), usage)
     }
 
+    actual fun bufferData(target: GLenum, data: IntArray, size: GLint, usage: GLenum) {
+        GLES20.glBufferData(target, size * INT_BYTE_SIZE, data.toIntBuffer(), usage)
+    }
+
     actual fun bufferData(target: GLenum, data: FloatArray, usage: GLenum) {
         GLES20.glBufferData(target, data.size * FLOAT_BYTE_SIZE, data.toFloatBuffer(), usage)
+    }
+
+    actual fun bufferData(target: GLenum, data: FloatArray, size: GLint, usage: GLenum) {
+        GLES20.glBufferData(target, size * FLOAT_BYTE_SIZE, data.toFloatBuffer(), usage)
     }
 
     actual fun bufferData(target: GLenum, data: ByteArray, usage: GLenum) {
         GLES20.glBufferData(target, data.size, data.toByteBuffer(), usage)
     }
 
+    actual fun bufferData(target: GLenum, data: ByteArray, size: GLint, usage: GLenum) {
+        GLES20.glBufferData(target, size, data.toByteBuffer(), usage)
+    }
+
     actual fun bufferSubData(target: GLenum, offset: GLintptr, data: IntArray) {
         GLES20.glBufferSubData(target, offset.toInt() * INT_BYTE_SIZE, data.size * INT_BYTE_SIZE, data.toIntBuffer())
+    }
+
+    actual fun bufferSubData(target: GLenum, offset: GLintptr, data: IntArray, size: GLint) {
+        GLES20.glBufferSubData(target, offset.toInt() * INT_BYTE_SIZE, size * INT_BYTE_SIZE, data.toIntBuffer())
     }
 
     actual fun bufferSubData(target: GLenum, offset: GLintptr, data: FloatArray) {
         GLES20.glBufferSubData(target, offset.toInt() * FLOAT_BYTE_SIZE, data.size * FLOAT_BYTE_SIZE, data.toFloatBuffer())
     }
 
+    actual fun bufferSubData(target: GLenum, offset: GLintptr, data: FloatArray, size: GLint) {
+        GLES20.glBufferSubData(target, offset.toInt() * FLOAT_BYTE_SIZE, size * FLOAT_BYTE_SIZE, data.toFloatBuffer())
+    }
+
     actual fun bufferSubData(target: GLenum, offset: GLintptr, data: ByteArray) {
         GLES20.glBufferSubData(target, offset.toInt(), data.size, data.toByteBuffer())
+    }
+
+    actual fun bufferSubData(target: GLenum, offset: GLintptr, data: ByteArray, size: GLint) {
+        GLES20.glBufferSubData(target, offset.toInt(), size, data.toByteBuffer())
     }
 
     actual fun checkFramebufferStatus(target: GLenum): GLenum {

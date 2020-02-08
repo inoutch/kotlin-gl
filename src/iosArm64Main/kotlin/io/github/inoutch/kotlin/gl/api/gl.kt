@@ -214,24 +214,48 @@ actual object gl {
         glBufferData(target.toUInt(), (data.size * INT_BYTE_SIZE).toLong(), data.refTo(0), usage.toUInt())
     }
 
+    actual fun bufferData(target: GLenum, data: IntArray, size: GLint, usage: GLenum) {
+        glBufferData(target.toUInt(), (size * INT_BYTE_SIZE).toLong(), data.refTo(0), usage.toUInt())
+    }
+
     actual fun bufferData(target: GLenum, data: FloatArray, usage: GLenum) {
         glBufferData(target.toUInt(), (data.size * FLOAT_BYTE_SIZE).toLong(), data.refTo(0), usage.toUInt())
     }
 
+    actual fun bufferData(target: GLenum, data: FloatArray, size: GLint, usage: GLenum) {
+        glBufferData(target.toUInt(), (size * FLOAT_BYTE_SIZE).toLong(), data.refTo(0), usage.toUInt())
+    }
+
     actual fun bufferData(target: GLenum, data: ByteArray, usage: GLenum) {
-        throw UnsupportedGLError()
+        glBufferData(target.toUInt(), data.size.toLong(), data.refTo(0), usage.toUInt())
+    }
+
+    actual fun bufferData(target: GLenum, data: ByteArray, size: GLint, usage: GLenum) {
+        glBufferData(target.toUInt(), size.toLong(), data.refTo(0), usage.toUInt())
     }
 
     actual fun bufferSubData(target: GLenum, offset: GLintptr, data: IntArray) {
         glBufferSubData(target.toUInt(), offset, (data.size * INT_BYTE_SIZE).toLong(), data.refTo(0))
     }
 
+    actual fun bufferSubData(target: GLenum, offset: GLintptr, data: IntArray, size: GLint) {
+        glBufferSubData(target.toUInt(), offset, (size * INT_BYTE_SIZE).toLong(), data.refTo(0))
+    }
+
     actual fun bufferSubData(target: GLenum, offset: GLintptr, data: FloatArray) {
         glBufferSubData(target.toUInt(), offset, (data.size * FLOAT_BYTE_SIZE).toLong(), data.refTo(0))
     }
 
+    actual fun bufferSubData(target: GLenum, offset: GLintptr, data: FloatArray, size: GLint) {
+        glBufferSubData(target.toUInt(), offset, (size * FLOAT_BYTE_SIZE).toLong(), data.refTo(0))
+    }
+
     actual fun bufferSubData(target: GLenum, offset: GLintptr, data: ByteArray) {
         glBufferSubData(target.toUInt(), offset, data.size.toLong(), data.refTo(0))
+    }
+
+    actual fun bufferSubData(target: GLenum, offset: GLintptr, data: ByteArray, size: GLint) {
+        glBufferSubData(target.toUInt(), offset, size.toLong(), data.refTo(0))
     }
 
     actual fun checkFramebufferStatus(target: GLenum): GLenum {

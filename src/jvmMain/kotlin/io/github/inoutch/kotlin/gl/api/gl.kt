@@ -62,24 +62,48 @@ actual object gl {
         GL46.glBufferData(target, data.toIntBuffer(), usage)
     }
 
+    actual fun bufferData(target: GLenum, data: IntArray, size: GLint, usage: GLenum) {
+        GL46.glBufferData(target, data.sliceArray(IntRange(0, size)).toIntBuffer(), usage)
+    }
+
     actual fun bufferData(target: GLenum, data: FloatArray, usage: GLenum) {
         GL46.glBufferData(target, data.toFloatBuffer(), usage)
+    }
+
+    actual fun bufferData(target: GLenum, data: FloatArray, size: GLint, usage: GLenum) {
+        GL46.glBufferData(target, data.sliceArray(IntRange(0, size)).toFloatBuffer(), usage)
     }
 
     actual fun bufferData(target: GLenum, data: ByteArray, usage: GLenum) {
         GL46.glBufferData(target, data.toByteBuffer(), usage)
     }
 
+    actual fun bufferData(target: GLenum, data: ByteArray, size: GLint, usage: GLenum) {
+        GL46.glBufferData(target, data.sliceArray(IntRange(0, size)).toByteBuffer(), usage)
+    }
+
     actual fun bufferSubData(target: GLenum, offset: GLintptr, data: IntArray) {
         GL46.glBufferSubData(target, offset, data)
+    }
+
+    actual fun bufferSubData(target: GLenum, offset: GLintptr, data: IntArray, size: GLint) {
+        GL46.glBufferSubData(target, offset, data.sliceArray(IntRange(0, size)))
     }
 
     actual fun bufferSubData(target: GLenum, offset: GLintptr, data: FloatArray) {
         GL46.glBufferSubData(target, offset, data)
     }
 
+    actual fun bufferSubData(target: GLenum, offset: GLintptr, data: FloatArray, size: GLint) {
+        GL46.glBufferSubData(target, offset, data.sliceArray(IntRange(0, size)))
+    }
+
     actual fun bufferSubData(target: GLenum, offset: GLintptr, data: ByteArray) {
         GL46.glBufferSubData(target, offset, data.toByteBuffer())
+    }
+
+    actual fun bufferSubData(target: GLenum, offset: GLintptr, data: ByteArray, size: GLint) {
+        GL46.glBufferSubData(target, offset, data.sliceArray(IntRange(0, size)).toByteBuffer())
     }
 
     actual fun checkFramebufferStatus(target: GLenum): GLenum {
