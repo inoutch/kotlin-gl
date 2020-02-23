@@ -4,10 +4,14 @@ val vertShaderSource = """
 #ifdef GL_ES
 precision mediump float;
 #endif
-attribute vec4 vPosition;
+attribute vec2 texcoord;
+attribute vec4 position;
+
+varying vec2 vTexcoord;
 
 void main() {
-    gl_Position = vPosition;
+    vTexcoord = texcoord;
+    gl_Position = position;
 }
 
 """.trimIndent()
@@ -17,14 +21,18 @@ val fragShaderSource = """
 precision mediump float;
 #endif
 
+varying vec2 vTexcoord;
+
+uniform sampler2D uTexture0;
+
 void main() {
-    gl_FragColor = vec4(1.0, 0.0, 0.0, 1.0);
+    gl_FragColor = texture2D(uTexture0, vTexcoord);
 }
 
 """.trimIndent()
 
 val triangleVertices = floatArrayOf(
-        0.0f, 0.5f, 0.0f,
-        -0.5f, -0.5f, 0.0f,
-        0.5f, -0.5f, 0.0f
+        0.0f, 0.5f, 0.0f, 0.5f, 0.0f,
+        -0.5f, -0.5f, 0.0f, 0.0f, 1.0f,
+        0.5f, -0.5f, 0.0f, 1.0f, 1.0f
 )
