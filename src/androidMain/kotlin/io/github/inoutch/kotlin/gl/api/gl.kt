@@ -694,16 +694,8 @@ actual object gl {
         GLES20.glVertexAttribPointer(index, size, type, normalized, stride, 0)
     }
 
-    actual fun vertexAttribPointer(index: GLuint, size: GLint, type: GLenum, normalized: GLboolean, stride: GLsizei, pointer: IntArray) {
-        GLES20.glVertexAttribPointer(index, size * INT_BYTE_SIZE, type, normalized, stride, pointer.toIntBuffer())
-    }
-
-    actual fun vertexAttribPointer(index: GLuint, size: GLint, type: GLenum, normalized: GLboolean, stride: GLsizei, pointer: FloatArray) {
-        GLES20.glVertexAttribPointer(index, size * FLOAT_BYTE_SIZE, type, normalized, stride, pointer.toFloatBuffer())
-    }
-
-    actual fun vertexAttribPointer(index: GLuint, size: GLint, type: GLenum, normalized: GLboolean, stride: GLsizei, pointer: ByteArray) {
-        GLES20.glVertexAttribPointer(index, size, type, normalized, stride, pointer.toByteBuffer())
+    actual fun vertexAttribPointer(index: GLuint, size: GLint, type: GLenum, normalized: GLboolean, stride: GLsizei, offset: GLsizei) {
+        GLES20.glVertexAttribPointer(index, size, type, normalized, stride, offset)
     }
 
     actual fun viewport(x: GLint, y: GLint, width: GLsizei, height: GLsizei) {

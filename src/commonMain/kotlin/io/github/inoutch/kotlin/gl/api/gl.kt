@@ -459,8 +459,6 @@ expect object gl {
     fun vertexAttrib4fv(index: GLuint, v: FloatArray)
     // TODO: Add offset version and remove others
     fun vertexAttribPointer(index: GLuint, size: GLint, type: GLenum, normalized: GLboolean, stride: GLsizei)
-    fun vertexAttribPointer(index: GLuint, size: GLint, type: GLenum, normalized: GLboolean, stride: GLsizei, pointer: IntArray)
-    fun vertexAttribPointer(index: GLuint, size: GLint, type: GLenum, normalized: GLboolean, stride: GLsizei, pointer: FloatArray)
-    fun vertexAttribPointer(index: GLuint, size: GLint, type: GLenum, normalized: GLboolean, stride: GLsizei, pointer: ByteArray)
+    fun vertexAttribPointer(index: GLuint, size: GLint, type: GLenum, normalized: GLboolean, stride: GLsizei, offset: GLsizei)
     fun viewport(x: GLint, y: GLint, width: GLsizei, height: GLsizei)
 }

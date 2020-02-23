@@ -4,6 +4,7 @@ import io.github.inoutch.kotlin.gl.error.UnsupportedGLError
 import io.github.inoutch.kotlin.gl.extension.toFloatArray
 import io.github.inoutch.kotlin.gl.extension.toIntArray
 import io.github.inoutch.kotlin.gl.extension.toUint32Array
+import io.github.inoutch.kotlin.gl.extension.toUint8Array
 import io.github.inoutch.kotlin.gl.utility.WebGLMap
 import org.khronos.webgl.Float32Array
 import org.khronos.webgl.Int32Array
@@ -50,19 +51,19 @@ actual object gl {
     }
 
     actual fun bindBuffer(target: GLenum, buffer: GLuint) {
-        glRenderingContext.bindBuffer(target, bufferMap[buffer])
+        glRenderingContext.bindBuffer(target, bufferMap.getOrNull(buffer))
     }
 
     actual fun bindFramebuffer(target: GLenum, framebuffer: GLuint) {
-        glRenderingContext.bindFramebuffer(target, framebufferMap[framebuffer])
+        glRenderingContext.bindFramebuffer(target, framebufferMap.getOrNull(framebuffer))
     }
 
     actual fun bindRenderbuffer(target: GLenum, renderbuffer: GLuint) {
-        glRenderingContext.bindRenderbuffer(target, renderbufferMap[renderbuffer])
+        glRenderingContext.bindRenderbuffer(target, renderbufferMap.getOrNull(renderbuffer))
     }
 
     actual fun bindTexture(target: GLenum, texture: GLuint) {
-        glRenderingContext.bindTexture(target, textureMap[texture])
+        glRenderingContext.bindTexture(target, textureMap.getOrNull(texture))
     }
 
     actual fun blendColor(red: GLfloat, green: GLfloat, blue: GLfloat, alpha: GLfloat) {
@@ -431,7 +432,9 @@ actual object gl {
     }
 
     actual fun getUniformLocation(program: GLuint, name: String): GLint {
-        return uniformMap.search(checkNotNull(glRenderingContext.getUniformLocation(programMap[program], name)))
+        val webGLProgram = programMap[program]
+        val webGLLocation = glRenderingContext.getUniformLocation(webGLProgram, name)
+        return uniformMap.create(checkNotNull(webGLLocation))
     }
 
     actual fun getVertexAttribfv(index: GLuint, pname: GLenum): GLfloat {
@@ -551,7 +554,7 @@ actual object gl {
     }
 
     actual fun texImage2D(target: GLenum, level: GLint, internalformat: GLint, width: GLsizei, height: GLsizei, border: GLint, format: GLenum, type: GLenum, pixels: ByteArray) {
-        glRenderingContext.texImage2D(target, level, internalformat, width, height, border, format, type, pixels.toUint32Array())
+        glRenderingContext.texImage2D(target, level, internalformat, width, height, border, format, type, pixels.toUint8Array())
     }
 
     actual fun texParameterf(target: GLenum, pname: GLenum, param: GLfloat) {
@@ -651,7 +654,7 @@ actual object gl {
     }
 
     actual fun useProgram(program: GLuint) {
-        glRenderingContext.useProgram(programMap[program])
+        glRenderingContext.useProgram(programMap.getOrNull(program))
     }
 
     actual fun validateProgram(program: GLuint) {
@@ -694,16 +697,8 @@ actual object gl {
         glRenderingContext.vertexAttribPointer(index, size, type, normalized, stride, 0)
     }
 
-    actual fun vertexAttribPointer(index: GLuint, size: GLint, type: GLenum, normalized: GLboolean, stride: GLsizei, pointer: IntArray) {
-        throw UnsupportedGLError()
-    }
-
-    actual fun vertexAttribPointer(index: GLuint, size: GLint, type: GLenum, normalized: GLboolean, stride: GLsizei, pointer: FloatArray) {
-        throw UnsupportedGLError()
-    }
-
-    actual fun vertexAttribPointer(index: GLuint, size: GLint, type: GLenum, normalized: GLboolean, stride: GLsizei, pointer: ByteArray) {
-        throw UnsupportedGLError()
+    actual fun vertexAttribPointer(index: GLuint, size: GLint, type: GLenum, normalized: GLboolean, stride: GLsizei, offset: GLsizei) {
+        glRenderingContext.vertexAttribPointer(index, size, type, normalized, stride, offset)
     }
 
     actual fun viewport(x: GLint, y: GLint, width: GLsizei, height: GLsizei) {

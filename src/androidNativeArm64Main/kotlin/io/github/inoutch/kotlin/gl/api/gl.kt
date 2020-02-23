@@ -3,7 +3,9 @@ package io.github.inoutch.kotlin.gl.api
 import io.github.inoutch.kotlin.gl.constant.FLOAT_BYTE_SIZE
 import io.github.inoutch.kotlin.gl.constant.INT_BYTE_SIZE
 import io.github.inoutch.kotlin.gl.error.UnsupportedGLError
+import kotlinx.cinterop.ByteVar
 import kotlinx.cinterop.CPointerVar
+import kotlinx.cinterop.IntVar
 import kotlinx.cinterop.alloc
 import kotlinx.cinterop.allocArray
 import kotlinx.cinterop.cstr
@@ -13,6 +15,7 @@ import kotlinx.cinterop.ptr
 import kotlinx.cinterop.refTo
 import kotlinx.cinterop.set
 import kotlinx.cinterop.toByte
+import kotlinx.cinterop.toCPointer
 import kotlinx.cinterop.toKStringFromUtf8
 import kotlinx.cinterop.value
 import platform.gles2.GLcharVar
@@ -882,16 +885,8 @@ actual object gl {
         glVertexAttribPointer(index.toUInt(), size, type.toUInt(), normalized.toByte().toUByte(), stride, null)
     }
 
-    actual fun vertexAttribPointer(index: GLuint, size: GLint, type: GLenum, normalized: GLboolean, stride: GLsizei, pointer: IntArray) {
-        glVertexAttribPointer(index.toUInt(), size, type.toUInt(), normalized.toByte().toUByte(), stride, pointer.refTo(0))
-    }
-
-    actual fun vertexAttribPointer(index: GLuint, size: GLint, type: GLenum, normalized: GLboolean, stride: GLsizei, pointer: FloatArray) {
-        glVertexAttribPointer(index.toUInt(), size, type.toUInt(), normalized.toByte().toUByte(), stride, pointer.refTo(0))
-    }
-
-    actual fun vertexAttribPointer(index: GLuint, size: GLint, type: GLenum, normalized: GLboolean, stride: GLsizei, pointer: ByteArray) {
-        glVertexAttribPointer(index.toUInt(), size, type.toUInt(), normalized.toByte().toUByte(), stride, pointer.refTo(0))
+    actual fun vertexAttribPointer(index: GLuint, size: GLint, type: GLenum, normalized: GLboolean, stride: GLsizei, offset: GLsizei) {
+        glVertexAttribPointer(index.toUInt(), size, type.toUInt(), normalized.toByte().toUByte(), stride, offset.toLong().toCPointer<ByteVar>())
     }
 
     actual fun viewport(x: GLint, y: GLint, width: GLsizei, height: GLsizei) {

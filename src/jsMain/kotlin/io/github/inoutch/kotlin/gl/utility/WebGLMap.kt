@@ -20,5 +20,7 @@ class WebGLMap<T> {
 
     operator fun get(id: Int): T = map.getValue(id)
 
+    fun getOrNull(id: Int): T? = map[id]
+
     fun search(value: T) = map.filter { it.value === value }.keys.first()
 }

@@ -689,16 +689,8 @@ actual object gl {
         GL46.glVertexAttribPointer(index, size, type, normalized, stride, NULL)
     }
 
-    actual fun vertexAttribPointer(index: GLuint, size: GLint, type: GLenum, normalized: GLboolean, stride: GLsizei, pointer: IntArray) {
-        GL46.glVertexAttribPointer(index, size, type, normalized, stride, pointer.toIntBuffer())
-    }
-
-    actual fun vertexAttribPointer(index: GLuint, size: GLint, type: GLenum, normalized: GLboolean, stride: GLsizei, pointer: FloatArray) {
-        GL46.glVertexAttribPointer(index, size, type, normalized, stride, pointer.toFloatBuffer())
-    }
-
-    actual fun vertexAttribPointer(index: GLuint, size: GLint, type: GLenum, normalized: GLboolean, stride: GLsizei, pointer: ByteArray) {
-        GL46.glVertexAttribPointer(index, size, type, normalized, stride, pointer.toByteBuffer())
+    actual fun vertexAttribPointer(index: GLuint, size: GLint, type: GLenum, normalized: GLboolean, stride: GLsizei, offset: GLsizei) {
+        GL46.glVertexAttribPointer(index, size, type, normalized, stride, offset.toLong())
     }
 
     actual fun viewport(x: GLint, y: GLint, width: GLsizei, height: GLsizei) {

@@ -3,10 +3,15 @@ package io.github.inoutch.kotlin.gl.extension
 import org.khronos.webgl.Float32Array
 import org.khronos.webgl.Int32Array
 import org.khronos.webgl.Uint32Array
+import org.khronos.webgl.Uint8Array
 import org.khronos.webgl.get
 
 fun ByteArray.toUint32Array(): Uint32Array {
     return Uint32Array(this.map { it.toInt() }.toTypedArray())
+}
+
+fun ByteArray.toUint8Array(): Uint8Array {
+    return Uint8Array(this.toTypedArray())
 }
 
 fun Int32Array.toIntArray(): IntArray {
