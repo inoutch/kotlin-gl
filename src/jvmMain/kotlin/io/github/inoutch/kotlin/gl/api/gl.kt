@@ -1,5 +1,7 @@
 package io.github.inoutch.kotlin.gl.api
 
+import io.github.inoutch.kotlin.gl.constant.FLOAT_BYTE_SIZE
+import io.github.inoutch.kotlin.gl.constant.INT_BYTE_SIZE
 import io.github.inoutch.kotlin.gl.extension.toByteBuffer
 import io.github.inoutch.kotlin.gl.extension.toFloatArray
 import io.github.inoutch.kotlin.gl.extension.toFloatBuffer
@@ -63,7 +65,7 @@ actual object gl {
     }
 
     actual fun bufferData(target: GLenum, data: IntArray, size: GLint, usage: GLenum) {
-        GL46.glBufferData(target, data.sliceArray(IntRange(0, size)).toIntBuffer(), usage)
+        GL46.glBufferData(target, data.sliceArray(0 until size).toIntBuffer(), usage)
     }
 
     actual fun bufferData(target: GLenum, data: FloatArray, usage: GLenum) {
@@ -71,7 +73,7 @@ actual object gl {
     }
 
     actual fun bufferData(target: GLenum, data: FloatArray, size: GLint, usage: GLenum) {
-        GL46.glBufferData(target, data.sliceArray(IntRange(0, size)).toFloatBuffer(), usage)
+        GL46.glBufferData(target, data.sliceArray(0 until size).toFloatBuffer(), usage)
     }
 
     actual fun bufferData(target: GLenum, data: ByteArray, usage: GLenum) {
@@ -79,23 +81,24 @@ actual object gl {
     }
 
     actual fun bufferData(target: GLenum, data: ByteArray, size: GLint, usage: GLenum) {
-        GL46.glBufferData(target, data.sliceArray(IntRange(0, size)).toByteBuffer(), usage)
+        GL46.glBufferData(target, data.sliceArray(0 until size).toByteBuffer(), usage)
     }
 
     actual fun bufferSubData(target: GLenum, offset: GLintptr, data: IntArray) {
-        GL46.glBufferSubData(target, offset, data)
+        GL46.glBufferSubData(target, offset * INT_BYTE_SIZE, data)
     }
 
     actual fun bufferSubData(target: GLenum, offset: GLintptr, data: IntArray, size: GLint) {
-        GL46.glBufferSubData(target, offset, data.sliceArray(IntRange(0, size)))
+        GL46.glBufferSubData(target, offset * INT_BYTE_SIZE, data.sliceArray(0 until size))
     }
 
     actual fun bufferSubData(target: GLenum, offset: GLintptr, data: FloatArray) {
-        GL46.glBufferSubData(target, offset, data)
+        GL46.glBufferSubData(target, offset * FLOAT_BYTE_SIZE, data)
     }
 
     actual fun bufferSubData(target: GLenum, offset: GLintptr, data: FloatArray, size: GLint) {
-        GL46.glBufferSubData(target, offset, data.sliceArray(IntRange(0, size)))
+        println(data.sliceArray(0 until size).toList())
+        GL46.glBufferSubData(target, offset * FLOAT_BYTE_SIZE, data.sliceArray(0 until size))
     }
 
     actual fun bufferSubData(target: GLenum, offset: GLintptr, data: ByteArray) {
@@ -103,7 +106,7 @@ actual object gl {
     }
 
     actual fun bufferSubData(target: GLenum, offset: GLintptr, data: ByteArray, size: GLint) {
-        GL46.glBufferSubData(target, offset, data.sliceArray(IntRange(0, size)).toByteBuffer())
+        GL46.glBufferSubData(target, offset, data.sliceArray(0 until size).toByteBuffer())
     }
 
     actual fun checkFramebufferStatus(target: GLenum): GLenum {

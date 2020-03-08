@@ -1,5 +1,7 @@
 package io.github.inoutch.kotlin.gl.api
 
+import io.github.inoutch.kotlin.gl.constant.FLOAT_BYTE_SIZE
+import io.github.inoutch.kotlin.gl.constant.INT_BYTE_SIZE
 import io.github.inoutch.kotlin.gl.error.UnsupportedGLError
 import io.github.inoutch.kotlin.gl.extension.toFloatArray
 import io.github.inoutch.kotlin.gl.extension.toIntArray
@@ -91,7 +93,7 @@ actual object gl {
     }
 
     actual fun bufferData(target: GLenum, data: IntArray, size: GLint, usage: GLenum) {
-        glRenderingContext.bufferData(target, Int32Array(data.sliceArray(IntRange(0, size)).toTypedArray()), usage)
+        glRenderingContext.bufferData(target, Int32Array(data.sliceArray(0 until size).toTypedArray()), usage)
     }
 
     actual fun bufferData(target: GLenum, data: FloatArray, usage: GLenum) {
@@ -99,7 +101,7 @@ actual object gl {
     }
 
     actual fun bufferData(target: GLenum, data: FloatArray, size: GLint, usage: GLenum) {
-        glRenderingContext.bufferData(target, Float32Array(data.sliceArray(IntRange(0, size)).toTypedArray()), usage)
+        glRenderingContext.bufferData(target, Float32Array(data.sliceArray(0 until size).toTypedArray()), usage)
     }
 
     actual fun bufferData(target: GLenum, data: ByteArray, usage: GLenum) {
@@ -111,19 +113,19 @@ actual object gl {
     }
 
     actual fun bufferSubData(target: GLenum, offset: GLintptr, data: IntArray) {
-        glRenderingContext.bufferSubData(target, offset.toInt(), Int32Array(data.toTypedArray()))
+        glRenderingContext.bufferSubData(target, offset.toInt() * INT_BYTE_SIZE, Int32Array(data.toTypedArray()))
     }
 
     actual fun bufferSubData(target: GLenum, offset: GLintptr, data: IntArray, size: GLint) {
-        glRenderingContext.bufferSubData(target, offset.toInt(), Int32Array(data.sliceArray(IntRange(0, size)).toTypedArray()))
+        glRenderingContext.bufferSubData(target, offset.toInt() * INT_BYTE_SIZE, Int32Array(data.sliceArray(0 until size).toTypedArray()))
     }
 
     actual fun bufferSubData(target: GLenum, offset: GLintptr, data: FloatArray) {
-        glRenderingContext.bufferSubData(target, offset.toInt(), Float32Array(data.toTypedArray()))
+        glRenderingContext.bufferSubData(target, offset.toInt() * FLOAT_BYTE_SIZE, Float32Array(data.toTypedArray()))
     }
 
     actual fun bufferSubData(target: GLenum, offset: GLintptr, data: FloatArray, size: GLint) {
-        glRenderingContext.bufferSubData(target, offset.toInt(), Float32Array(data.sliceArray(IntRange(0, size)).toTypedArray()))
+        glRenderingContext.bufferSubData(target, offset.toInt() * FLOAT_BYTE_SIZE, Float32Array(data.sliceArray(0 until size).toTypedArray()))
     }
 
     actual fun bufferSubData(target: GLenum, offset: GLintptr, data: ByteArray) {
